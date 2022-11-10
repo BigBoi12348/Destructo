@@ -3,7 +3,7 @@ using Photon.Pun;
 
 public class Jump : MonoBehaviour
 {
-    Rigidbody rigidbody;
+    Rigidbody rb;
     public float jumpStrength = 2;
     public event System.Action Jumped;
     PhotonView view;
@@ -19,26 +19,25 @@ public class Jump : MonoBehaviour
     }
     private void Start()
     {
-        view.GetComponent<PhotonView>();
+        //view.GetComponent<PhotonView>();
     }
 
     void Awake()
     {
         // Get rigidbody.
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void LateUpdate()
     {
-        if (view.IsMine)
-        {
+        
             // Jump when the Jump button is pressed and we are on the ground.
             if (Input.GetButtonDown("Jump") && (!groundCheck || groundCheck.isGrounded))
             {
-                rigidbody.AddForce(Vector3.up * 100 * jumpStrength);
+                rb.AddForce(Vector3.up * 100 * jumpStrength);
                 Jumped?.Invoke();
             }
-        }
+        
        
     }
 }
