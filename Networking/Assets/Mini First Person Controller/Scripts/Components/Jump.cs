@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class Jump : MonoBehaviour
 {
     Rigidbody rigidbody;
     public float jumpStrength = 2;
     public event System.Action Jumped;
+    PhotonView view;
 
     [SerializeField, Tooltip("Prevents jumping when the transform is in mid-air.")]
     GroundCheck groundCheck;
@@ -15,6 +17,10 @@ public class Jump : MonoBehaviour
         // Try to get groundCheck.
         groundCheck = GetComponentInChildren<GroundCheck>();
     }
+    private void Start()
+    {
+        view.GetComponent<PhotonView>();
+    }
 
     void Awake()
     {
@@ -24,11 +30,15 @@ public class Jump : MonoBehaviour
 
     void LateUpdate()
     {
-        // Jump when the Jump button is pressed and we are on the ground.
-        if (Input.GetButtonDown("Jump") && (!groundCheck || groundCheck.isGrounded))
+        if (view.IsMine)
         {
-            rigidbody.AddForce(Vector3.up * 100 * jumpStrength);
-            Jumped?.Invoke();
+            // Jump when the Jump button is pressed and we are on the ground.
+            if (Input.GetButtonDown("Jump") && (!groundCheck || groundCheck.isGrounded))
+            {
+                rigidbody.AddForce(Vector3.up * 100 * jumpStrength);
+                Jumped?.Invoke();
+            }
         }
+       
     }
 }
